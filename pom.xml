@@ -55,4 +55,16 @@
 			</plugin>
 		</plugins>
 	</build>
+	<url>https://github.com/dbac2002/sonar-hipchat-plugin</url>
+	<organization>
+		<name>Cetrea</name>
+		<url>http://www.cetrea.com</url>
+	</organization>
+	<scm>
+		<url>https://github.com/dbac2002/sonar-hipchat-plugin</url>
+		<developerConnection>dbac2002</developerConnection>
+	</scm>
+	<issueManagement>
+		<url>https://github.com/dbac2002/sonar-hipchat-plugin/issues</url>
+	</issueManagement>
 </project>
