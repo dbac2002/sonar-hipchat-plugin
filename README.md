@@ -2,7 +2,9 @@
 A sonar plugin to send notifications to a HipChat room.
 
 ## Howto ##
-To build the plugin call **mvn clean package**. The artifact must be copied to the *SONAR_HOME/extensions/plugins* folder and sonarqube must be restarted.
+To build the plugin call **mvn clean package** (or download the current release). The artifact must be copied to the *SONAR_HOME/extensions/plugins* folder and sonarqube must be restarted.
+
+Tested for sonarqube 5.2 and 5.3
 
 ## configuration ##
 The following properties can be configured in the sonarqube build
