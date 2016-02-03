@@ -1,23 +1,28 @@
 package com.sonar.hipchat.plugin;
 
-import java.util.List;
-
-import org.sonar.api.issue.Issue;
-import org.sonar.api.issue.ProjectIssues;
-import org.sonar.api.resources.Project;
-
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.sonar.hipchat.plugin.model.Notification;
 import com.sonar.hipchat.plugin.model.Notification.NotificationColor;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
+import org.sonar.api.config.Settings;
+import org.sonar.api.issue.Issue;
+import org.sonar.api.issue.ProjectIssues;
+import org.sonar.api.resources.Project;
+
+import java.io.StringWriter;
+import java.util.List;
 
 final class SonarHipChatMessageBuilder implements HipChatMessageBuilder {
 	private final Project project;
 	private final ProjectIssues projectIssues;
+	private final Settings settings;
 
-	SonarHipChatMessageBuilder(Project project, ProjectIssues projectIssues) {
+	SonarHipChatMessageBuilder( Project project, Settings settings, ProjectIssues projectIssues ) {
 		this.project = project;
 		this.projectIssues = projectIssues;
+		this.settings = settings;
 	}
 
 	@Override
@@ -37,16 +42,27 @@ final class SonarHipChatMessageBuilder implements HipChatMessageBuilder {
 	@Override
 	public String getStatusMessage() {
 		List<Issue> issues = Lists.newArrayList(projectIssues.issues());
-		long newIssues = issues.stream().filter(i -> i.isNew()).count();
-		List<Issue> resolvedIssues = Lists.newArrayList(projectIssues.resolvedIssues());
+		long issuesNew = issues.stream().filter(i -> i.isNew()).count();
+		List<Issue> issuesResolved = Lists.newArrayList(projectIssues.resolvedIssues());
+		NotificationColor color = determineNotificationColor(issuesResolved.size(), issuesNew, issues.size());
+		Velocity.init();
 
-		NotificationColor color = determineNotificationColor(resolvedIssues.size(), newIssues, issues.size());
-		String message = String.format(
-				"%s has been analysed at %s.%nStatus: %d new issues | %d resolved issues | %d total issues",
-				project.getName(), project.getAnalysisDate().toString(), newIssues, resolvedIssues.size(),
-				issues.size());
+		VelocityContext context = new VelocityContext();
+		context.put("projectName", project.getName());
+		context.put("analysisDate", project.getAnalysisDate().toString());
+		context.put("issuesNew", issuesNew);
+		context.put("issuesResolved", issuesResolved.size());
+		context.put("issuesTotal", issues.size());
 
-		return createJsonMessage(message, color);
+		String template = getTemplate();
+		StringWriter writer = new StringWriter();
+		Velocity.evaluate(context, writer, "TemplateName", template);
+
+		return createJsonMessage(writer.toString(), color);
+	}
+
+	private String getTemplate() {
+		return settings.getString(SonarHipChatProperties.MESSAGE_TEMPLATE);
 	}
 
 	private NotificationColor determineNotificationColor(int resolved, long newIssues, int totalIssues) {
