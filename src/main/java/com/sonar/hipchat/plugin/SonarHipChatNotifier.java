@@ -1,12 +1,5 @@
 package com.sonar.hipchat.plugin;
 
-import static com.sonar.hipchat.plugin.SonarHipChatProperties.DISABLED;
-import static com.sonar.hipchat.plugin.SonarHipChatProperties.PRE_MESSAGE;
-import static com.sonar.hipchat.plugin.SonarHipChatProperties.ROOM;
-import static com.sonar.hipchat.plugin.SonarHipChatProperties.TOKEN;
-import static com.sonar.hipchat.plugin.SonarHipChatProperties.URL_TEMPLATE;
-import static org.apache.commons.lang.StringUtils.isBlank;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.PostJob;
@@ -15,6 +8,9 @@ import org.sonar.api.batch.measure.MetricFinder;
 import org.sonar.api.config.Settings;
 import org.sonar.api.issue.ProjectIssues;
 import org.sonar.api.resources.Project;
+
+import static com.sonar.hipchat.plugin.SonarHipChatProperties.*;
+import static org.apache.commons.lang.StringUtils.isBlank;
 
 public class SonarHipChatNotifier implements PostJob {
 	private Logger LOGGER = LoggerFactory.getLogger(SonarHipChatNotifier.class);
@@ -38,9 +34,9 @@ public class SonarHipChatNotifier implements PostJob {
 				return;
 			}
 
-			String postUrl = String.format(URL_TEMPLATE, room, token);
+			String postUrl = String.format(settings.getString(URL_TEMPLATE), room, token);
 			HipChatHttpClient hipChatHttpClient = new HipChatHttpClient(postUrl);
-			HipChatMessageBuilder messageBuilder = new SonarHipChatMessageBuilder(project, projectIssues);
+			HipChatMessageBuilder messageBuilder = new SonarHipChatMessageBuilder(project, settings, projectIssues);
 			hipChatHttpClient.sendPreNotification(settings.getString(PRE_MESSAGE), messageBuilder);
 			hipChatHttpClient.sendStatusNotification(messageBuilder);
 		}

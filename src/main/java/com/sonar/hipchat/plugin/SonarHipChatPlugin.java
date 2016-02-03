@@ -1,12 +1,12 @@
 package com.sonar.hipchat.plugin;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.sonar.api.Properties;
 import org.sonar.api.Property;
 import org.sonar.api.PropertyType;
 import org.sonar.api.SonarPlugin;
+
+import java.util.Collections;
+import java.util.List;
 
 // @formatter:off
 @Properties({ 
@@ -37,7 +37,21 @@ import org.sonar.api.SonarPlugin;
 			  defaultValue = "",
 			  global = true,
 			  project = true,
-			  type = PropertyType.STRING)
+			  type = PropertyType.STRING),
+	@Property(key = SonarHipChatProperties.MESSAGE_TEMPLATE,
+			  name = "Notification message Velocity template",
+			  description = "Apache Velocity message template, for list of variables see source code",
+			  defaultValue = "$projectName has been analysed at $analysisDate.$newlineStatus: $issuesNew new issues | $issuesResolved resolved issues | $issuesTotal total issues",
+			  global = true,
+			  project = true,
+			  type = PropertyType.STRING),
+	@Property(key = SonarHipChatProperties.URL_TEMPLATE,
+			  name = "Notification URL template",
+			  description = "URL template for notifications",
+			  defaultValue = "https://api.hipchat.com/v2/room/%s/notification?auth_token=%s",
+			  global = true,
+			  project = true,
+			  type = PropertyType.STRING),
 	})
 // @formatter:on
 public class SonarHipChatPlugin extends SonarPlugin {
