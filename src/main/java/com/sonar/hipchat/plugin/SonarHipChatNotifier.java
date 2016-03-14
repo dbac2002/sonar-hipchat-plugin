@@ -1,16 +1,19 @@
 package com.sonar.hipchat.plugin;
 
+import static com.sonar.hipchat.plugin.SonarHipChatProperties.DISABLED;
+import static com.sonar.hipchat.plugin.SonarHipChatProperties.PRE_MESSAGE;
+import static com.sonar.hipchat.plugin.SonarHipChatProperties.ROOM;
+import static com.sonar.hipchat.plugin.SonarHipChatProperties.TOKEN;
+import static com.sonar.hipchat.plugin.SonarHipChatProperties.URL_TEMPLATE;
+import static org.apache.commons.lang.StringUtils.isBlank;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.PostJob;
 import org.sonar.api.batch.SensorContext;
-import org.sonar.api.batch.measure.MetricFinder;
 import org.sonar.api.config.Settings;
 import org.sonar.api.issue.ProjectIssues;
 import org.sonar.api.resources.Project;
-
-import static com.sonar.hipchat.plugin.SonarHipChatProperties.*;
-import static org.apache.commons.lang.StringUtils.isBlank;
 
 public class SonarHipChatNotifier implements PostJob {
 	private Logger LOGGER = LoggerFactory.getLogger(SonarHipChatNotifier.class);
@@ -18,7 +21,7 @@ public class SonarHipChatNotifier implements PostJob {
 	private Settings settings;
 	private ProjectIssues projectIssues;
 
-	public SonarHipChatNotifier(Settings settings, ProjectIssues projectIssues, MetricFinder metricFinder) {
+	public SonarHipChatNotifier(Settings settings, ProjectIssues projectIssues) {
 		this.settings = settings;
 		this.projectIssues = projectIssues;
 	}
