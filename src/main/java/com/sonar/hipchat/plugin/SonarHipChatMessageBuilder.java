@@ -62,6 +62,7 @@ final class SonarHipChatMessageBuilder implements HipChatMessageBuilder {
 		context.put("issuesTotal", issues.size());
 		context.put("issuesNewBlockers", issuesNewBlockers);
 		context.put("issuesBlockers", issuesBlockers);
+		context.put("newlineStatus", "\n");
 
 		String template = getTemplate();
 		StringWriter writer = new StringWriter();
