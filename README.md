@@ -6,7 +6,7 @@ To build the plugin call **mvn clean package** (or download the current release)
 
 Tested for sonarqube 5.2 and 5.3
 
-The plugin requires Java 1.8
+The plugin requires Java 1.6+
 
 ## configuration ##
 The following properties can be configured in the sonarqube build
