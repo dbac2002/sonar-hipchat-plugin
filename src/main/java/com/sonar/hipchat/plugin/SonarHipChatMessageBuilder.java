@@ -44,12 +44,27 @@ final class SonarHipChatMessageBuilder implements HipChatMessageBuilder {
 	@Override
 	public String getStatusMessage() {
 		List<Issue> issues = Lists.newArrayList(projectIssues.issues());
-		long issuesNew = issues.stream().filter(i -> i.isNew()).count();
+
+		long issuesNew= 0;
+		for(Issue i : issues) {
+			if(i.isNew()) {
+				issuesNew++;
+			}
+		}
 		// TODO create counters for all severities with {@link
 		// java.util.stream.Collectors} for both new and all issues
-		long issuesNewBlockers = issues.stream().filter(i -> i.isNew() && i.severity().equals(Severity.BLOCKER))
-				.count();
-		long issuesBlockers = issues.stream().filter(i -> i.severity().equals(Severity.BLOCKER)).count();
+		long issuesNewBlockers= 0;
+		for(Issue i : issues) {
+			if(i.isNew() && i.severity().equals(Severity.BLOCKER)) {
+				issuesNewBlockers++;
+			}
+		}
+		long issuesBlockers= 0;
+		for(Issue i : issues) {
+			if(i.severity().equals(Severity.BLOCKER)) {
+				issuesBlockers++;
+			}
+		}
 		List<Issue> issuesResolved = Lists.newArrayList(projectIssues.resolvedIssues());
 		NotificationColor color = determineNotificationColor(issuesResolved.size(), issuesNew, issues.size());
 		Velocity.init();
